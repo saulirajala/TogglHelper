@@ -12,11 +12,11 @@ PHP library for Toggl API v8 by Arend Jan Tetteroo (https://github.com/arendjant
 
 
 ## Todo:
-1. Dynamic statistic to fronpage (so that it echoes current week hours)
+1. Dynamic statistic to frontpage (so that it echoes current week hours)
 2. Shortcode for printing the week/month/year -statistics. Few problems though:
     1. Fronpage week statistic works only if there are 5 workday in a week, so for example finnish arkipyhät are bad
-    2. Month workhours statistic to fronpage (same problem as in 1.)
-    3. Year workhours statistic to fronpage (same problem as in 1.)
+    2. Month workhours statistic to frontpage (same problem as in 1.)
+    3. Year workhours statistic to frontpage (same problem as in 1.)
 3. Put api key and other options (description of new time entry, ID of new time entrys project) to admin option page
 4. What if I want to keep longer lunchtime?? => Maybe to acf-field?
 
