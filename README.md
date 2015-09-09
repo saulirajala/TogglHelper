@@ -26,5 +26,6 @@ PHP library for Toggl API v8 by Arend Jan Tetteroo (https://github.com/arendjant
 ##Changelog
 9.9.2015
 v1.1 – Add settings page for easier customize
+
 7.9.2015
 v1.0 is published with basic functionalities
