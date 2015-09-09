@@ -128,7 +128,7 @@ class Toggl_Helper_Day_Entries {
 						'key'			 => 'field_654304dab93c8',
 						'label'			 => __( 'How long (in hours) you were on a break (lunchbreak or other). In format 0.5', TOGGL_HELPER_TEXTDOMAIN ),
 						'name'			 => 'break_time',
-						'type'			 => 'text',
+						'type'			 => 'number',
 						'default_value'	 => '0.5',
 						'placeholder'	 => '',
 						'prepend'		 => '',

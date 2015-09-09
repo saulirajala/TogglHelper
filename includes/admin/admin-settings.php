@@ -19,6 +19,8 @@ class Toggl_Helper_Admin_Settings {
 			wp_die( sprintf( __( "%s is a singleton class and your cannot create a second instance.", TOGGL_HELPER_TEXTDOMAIN ), get_class( $this ) ) );
 		}
 		self::$_this = $this;
+		
+		add_action( 'admin_enqueue_scripts', array( $this, 'load_scripts' ) );
 
 		add_action( 'admin_menu', array( $this, 'toggl_helper_add_admin_menu' ) );
 		add_action( 'admin_init', array( $this, 'toggl_helper_settings_init' ) );
@@ -30,6 +32,14 @@ class Toggl_Helper_Admin_Settings {
 	 */
 	function this() {
 		return self::$_this;
+	}
+	
+	function load_scripts() {
+		global $pagenow, $typenow;
+
+		if ( !empty( $pagenow ) && ('post-new.php' === $pagenow || 'post.php' === $pagenow ) && $typenow == 'valu_toggl_day' ) {
+			wp_enqueue_script( 'toggl_dayr-admin-edit', plugins_url( 'assets/js/toggl_helper.js', dirname( dirname( __FILE__ ) ) ) );
+		}
 	}
 
 	/**
@@ -75,8 +85,6 @@ class Toggl_Helper_Admin_Settings {
 
 		if ( !array_key_exists( "toggl_helper_field_toggl_api_key", $options ) ) {
 			$options[ 'toggl_helper_field_toggl_api_key' ] = 0;
-		} elseif ( !is_numeric( $options[ 'toggl_helper_field_toggl_api_key' ] ) ) {
-			$options[ 'toggl_helper_field_max_articles' ] = 0;
 		}
 		?>
 		<input type='text' name='toggl_helper_settings[toggl_helper_field_toggl_api_key]' value='<?php echo esc_html( $options[ 'toggl_helper_field_toggl_api_key' ] ); ?>'>

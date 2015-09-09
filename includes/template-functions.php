@@ -31,7 +31,6 @@ function my_acf_save_post( $post_id ) {
 		return;
 	}
 
-
 	// array of field values
 	$fields = $_POST[ 'fields' ];
 
@@ -39,15 +38,10 @@ function my_acf_save_post( $post_id ) {
 		return;
 	}
 
-
 	// if you want to see what is happening, add debug => true to the factory call
 	$toggl_client = TogglClient::factory( array( 'api_key' => $GLOBALS[ 'Toggl_Helper' ]->toggl_api_key, 'debug' => false ) );
-
 	
-//	$today	 = date( DATE_ATOM, getdate()[ 0 ] );
-//	$today	 = substr( $today, 0, strpos( $today, "T" ) );
-	$today	 = $_POST[ 'fields' ][ 'field_546613dab92d4' ];
-//	
+	$today	 = $_POST[ 'fields' ][ 'field_546613dab92d4' ];	
 	//calculate duration of the toggl time entries 
 	$time_entries = get_time_entries( $toggl_client, $today );
 	if ( !empty( $time_entries ) ) {	
@@ -59,26 +53,23 @@ function my_acf_save_post( $post_id ) {
 		$time_entries_duration = 0;
 	}
 	
-	$break_time	 = $_POST[ 'fields' ][ 'field_654304dab93c8' ]; //TODO: muuta ,-merkki .-merkiksi
-	if (  is_numeric( $break_time )) {
-		$workday_in_seconds = get_workday_in_seconds( $today ) - ($break_time*60*60); //vähennetään ruokkis
+	$break_time	 = (float)$_POST[ 'fields' ][ 'field_654304dab93c8' ];
+	if ( is_float( $break_time )) {
+		$workday_in_seconds = get_workday_in_seconds( $today ) - ($break_time*60*60); //Lets minus the breaks
 	}else {
 		$workday_in_seconds = get_workday_in_seconds( $today );
 	}
-	$other_works = $workday_in_seconds - $time_entries_duration; //epämääräistä => toggleen
+	$other_works = $workday_in_seconds - $time_entries_duration;
 
-	// specific field value
-	$toggl_hours = $time_entries_duration; //hae tunnit
+	$_POST[ 'fields' ][ 'field_546304ceb92d3' ] = gmdate( "H:i:s", $workday_in_seconds );
 
-	$_POST[ 'fields' ][ 'field_546304ceb92d3' ] = gmdate( "H:i:s", $workday_in_seconds ); //TODO: muuttaa nämä joksikin muuksi kuin tekstikentäksi
-
-	if ( $other_works > 0 && is_numeric( $other_works ) ) {
+	if ( $GLOBALS[ 'Toggl_Helper' ]->other_works_id > 0 && $other_works > 0 && is_numeric( $other_works ) ) {
 		$toggl_client->CreateTimeEntry( array( 'time_entry' => array(
 				'description'	 => $GLOBALS[ 'Toggl_Helper' ]->description,
 				'pid'			 => $GLOBALS[ 'Toggl_Helper' ]->other_works_id,
 				'created_with'	 => 'Wordpress-plugin',
 				'duration'		 => (int) $other_works,
-				'start'			 => $today.'T15:00:00+00:00' ) ) );
+				'start'			 => $today.'T17:00:00+00:00' ) ) );
 	}
 	
 	$total = (7.5*60*60)-$workday_in_seconds;
@@ -87,7 +78,7 @@ function my_acf_save_post( $post_id ) {
 		$total = -1*$total;
 		$pre = '+';
 	}
-	$_POST[ 'fields' ][ 'field_546304dab94d3' ] =  $pre.gmdate( "H:i:s", $total );//TODO: muuttaa nämä joksikin muuksi kuin tekstikentäksi
+	$_POST[ 'fields' ][ 'field_546304dab94d3' ] =  $pre.gmdate( "H:i:s", $total );
 
 }
 
@@ -102,7 +93,7 @@ function get_workday_in_seconds( $today ) {
 	$start_time	 = new DateTime( $today . 'T' . $start_time_acf . ':00+00:00' );
 	$end_time	 = new DateTime( $today . 'T' . $end_time_acf . ':00+00:00' );
 	//calculate how long workday lasts
-	$workday_in_seconds = abs( $start_time->getTimestamp() - $end_time->getTimestamp() ); //real hours in seconds
+	$workday_in_seconds = abs( $start_time->getTimestamp() - $end_time->getTimestamp() );
 	return $workday_in_seconds;
 }
 
