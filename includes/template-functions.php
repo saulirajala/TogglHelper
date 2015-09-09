@@ -72,7 +72,7 @@ function my_acf_save_post( $post_id ) {
 				'start'			 => $today.'T17:00:00+00:00' ) ) );
 	}
 	
-	$total = (7.5*60*60)-$workday_in_seconds;
+	$total = ($GLOBALS[ 'Toggl_Helper' ]->workhours*60*60)-$workday_in_seconds;
 	$pre = '-';
 	if ($total < 0) {
 		$total = -1*$total;

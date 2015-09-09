@@ -74,10 +74,19 @@ class Toggl_Helper {
 			$description = get_option( 'toggl_helper_settings' )[ 'toggl_helper_field_time_entry_description' ];
 		}
 		
+		if ( get_option( 'toggl_helper_settings' ) === '' ) {
+			$workhours = 7.5;
+		}elseif ( !array_key_exists( "toggl_helper_field_workhours_in_day", get_option( 'toggl_helper_settings' ) ) ) {
+			$workhours = 7.5;
+		}else {
+			$workhours = get_option( 'toggl_helper_settings' )[ 'toggl_helper_field_workhours_in_day' ];
+		}
+		
 		
 		$this->toggl_api_key = $toggl_api_key;
 		$this->other_works_id = (int)$other_works_id;
 		$this->description = $description;
+		$this->workhours = $workhours;
 		
 		include( 'includes/template-functions.php' );
 

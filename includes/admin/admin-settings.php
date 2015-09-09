@@ -65,6 +65,10 @@ class Toggl_Helper_Admin_Settings {
 		);
 
 		add_settings_field(
+		'toggl_helper_field_workhours_in_day', __( 'How many hours you should work in a day?', TOGGL_HELPER_TEXTDOMAIN ), array( $this, 'toggl_helper_field_workhours_in_day_render' ), 'togglHelperPlugin', 'toggl_helper_section'
+		);
+
+		add_settings_field(
 		'toggl_helper_field_project_id', __( 'Project ID (What is the project where you want to create time entry?)', TOGGL_HELPER_TEXTDOMAIN ), array( $this, 'toggl_helper_field_project_id_render' ), 'togglHelperPlugin', 'toggl_helper_section'
 		);
 		
@@ -88,6 +92,24 @@ class Toggl_Helper_Admin_Settings {
 		}
 		?>
 		<input type='text' name='toggl_helper_settings[toggl_helper_field_toggl_api_key]' value='<?php echo esc_html( $options[ 'toggl_helper_field_toggl_api_key' ] ); ?>'>
+		<?php
+	}
+	
+	/**
+	 * 
+	 */
+	function toggl_helper_field_workhours_in_day_render() {
+		if ( !get_option( 'toggl_helper_settings' ) ) {
+			$options = array();
+		} else {
+			$options = get_option( 'toggl_helper_settings' );
+		}
+
+		if ( !array_key_exists( "toggl_helper_field_workhours_in_day", $options ) ) {
+			$options[ 'toggl_helper_field_workhours_in_day' ] = 7.5;
+		}
+		?>
+		<input type='number' name='toggl_helper_settings[toggl_helper_field_workhours_in_day]' value='<?php echo esc_html( $options[ 'toggl_helper_field_workhours_in_day' ] ); ?>'>
 		<?php
 	}
 
