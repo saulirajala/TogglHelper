@@ -1,5 +1,6 @@
 # Toggl Helper
-Toggl Helper -plugin for Wordpress. Requires Advanced Custom Fields.
+Toggl Helper -plugin for Wordpress. Requires Advanced Custom Fields and 
+PHP library for Toggl API v8 (you can get it from https://github.com/arendjantetteroo/guzzle-toggl)
 
 ## What plugin do?
 1. Creates custom post type 'Day'.

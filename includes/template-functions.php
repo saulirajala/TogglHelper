@@ -27,7 +27,7 @@ add_filter( 'wp_insert_post_data', 'filter_handler', '99', 2 );
 function my_acf_save_post( $post_id ) {
 
 	// bail early if no ACF data
-	if ( empty( $_POST[ 'fields' ] ) || empty( $_POST[ 'fields' ][ 'field_546304dab92d4' ] ) || empty( $_POST[ 'fields' ][ 'field_546304dab93c8' ] || empty($_POST[ 'fields' ][ 'field_546613dab92d4' ])) ) {
+	if ( empty( $_POST[ 'fields' ] ) || empty( $_POST[ 'fields' ][ 'field_546304dab92d4' ] ) || empty( $_POST[ 'fields' ][ 'field_546304dab93c8' ] ) || empty($_POST[ 'fields' ][ 'field_546613dab92d4' ]) ) {
 		return;
 	}
 
@@ -59,17 +59,22 @@ function my_acf_save_post( $post_id ) {
 		$time_entries_duration = 0;
 	}
 	
-	$workday_in_seconds = get_workday_in_seconds( $today ) - (0.5*60*60); //vähennetään ruokkis
+	$break_time	 = $_POST[ 'fields' ][ 'field_654304dab93c8' ]; //TODO: muuta ,-merkki .-merkiksi
+	if (  is_numeric( $break_time )) {
+		$workday_in_seconds = get_workday_in_seconds( $today ) - ($break_time*60*60); //vähennetään ruokkis
+	}else {
+		$workday_in_seconds = get_workday_in_seconds( $today );
+	}
 	$other_works = $workday_in_seconds - $time_entries_duration; //epämääräistä => toggleen
 
 	// specific field value
 	$toggl_hours = $time_entries_duration; //hae tunnit
 
-	$_POST[ 'fields' ][ 'field_546304ceb92d3' ] = gmdate( "H:i:s", $workday_in_seconds );
+	$_POST[ 'fields' ][ 'field_546304ceb92d3' ] = gmdate( "H:i:s", $workday_in_seconds ); //TODO: muuttaa nämä joksikin muuksi kuin tekstikentäksi
 
 	if ( $other_works > 0 && is_numeric( $other_works ) ) {
 		$toggl_client->CreateTimeEntry( array( 'time_entry' => array(
-				'description'	 => "Epämääräistä sälää",
+				'description'	 => $GLOBALS[ 'Toggl_Helper' ]->description,
 				'pid'			 => $GLOBALS[ 'Toggl_Helper' ]->other_works_id,
 				'created_with'	 => 'Wordpress-plugin',
 				'duration'		 => (int) $other_works,
@@ -82,7 +87,7 @@ function my_acf_save_post( $post_id ) {
 		$total = -1*$total;
 		$pre = '+';
 	}
-	$_POST[ 'fields' ][ 'field_546304dab94d3' ] =  $pre.gmdate( "H:i:s", $total );
+	$_POST[ 'fields' ][ 'field_546304dab94d3' ] =  $pre.gmdate( "H:i:s", $total );//TODO: muuttaa nämä joksikin muuksi kuin tekstikentäksi
 
 }
 

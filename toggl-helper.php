@@ -42,18 +42,43 @@ class Toggl_Helper {
 		define( 'TOGGL_HELPER_TEXTDOMAIN', $this->textdomain );
 		define( 'TOGGL_HELPER_HOOK_PREFIX', $this->hook_prefix );
 
-		require TOGGL_HELPER_PLUGIN_DIR. '/apikey.php'; //FIXME: use your own apikey.php
 		require TOGGL_HELPER_PLUGIN_DIR. '/vendor/autoload.php';
-
 
 		// Additional files
 		include( 'includes/custom-post-types.php' );
+		include( 'includes/admin/admin-settings.php' );
 
-
+		$this->toggl_helper_admin_settings	 = new Toggl_Helper_Admin_Settings();
 		$this->toggl_helper_acf = new Toggl_Helper_Day_Entries();
+		
+		$toggl_api_version = 'v8';
+		
+		
+		if ( get_option( 'toggl_helper_settings' ) === '' ) {
+			$toggl_api_key = 0;
+		}else {
+			$toggl_api_key = get_option( 'toggl_helper_settings' )[ 'toggl_helper_field_toggl_api_key' ];
+		}
+		
+		if ( get_option( 'toggl_helper_settings' ) === '' ) {
+			$other_works_id = 0;
+		}else {
+			$other_works_id = get_option( 'toggl_helper_settings' )[ 'toggl_helper_field_project_id' ];
+		}
+		
+		if ( get_option( 'toggl_helper_settings' ) === '' ) {
+			$description = 0;
+		}elseif ( !array_key_exists( "toggl_helper_field_time_entry_description", get_option( 'toggl_helper_settings' ) ) ) {
+			$description = 0;
+		}else {
+			$description = get_option( 'toggl_helper_settings' )[ 'toggl_helper_field_time_entry_description' ];
+		}
+		
+		
 		$this->toggl_api_key = $toggl_api_key;
-		$this->other_works_id = $other_works_id;
-
+		$this->other_works_id = (int)$other_works_id;
+		$this->description = $description;
+		
 		include( 'includes/template-functions.php' );
 
 		// Actions
